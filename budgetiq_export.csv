@@ -1,0 +1,16 @@
+id,date,type,category,amount,description,created_at
+71,2026-04-27,expense,Transport,25.61,Subway ticket,2026-04-30 08:54:15
+65,2026-04-25,expense,Health,253.48,Gym membership,2026-04-30 08:54:15
+61,2026-04-18,expense,Entertainment,60.79,Video games,2026-04-30 08:54:15
+62,2026-04-16,income,Investment,2528.87,Interest,2026-04-30 08:54:15
+64,2026-04-10,expense,Education,86.3,Books,2026-04-30 08:54:15
+72,2026-04-04,expense,Utilities,23.92,Phone plan,2026-04-30 08:54:15
+75,2026-04-01,expense,Entertainment,266.91,Netflix subscription,2026-04-30 08:54:15
+73,2026-03-27,expense,Health,144.69,Pharmacy,2026-04-30 08:54:15
+67,2026-03-12,expense,Utilities,96.31,Water bill,2026-04-30 08:54:15
+66,2026-03-03,expense,Food,104.34,Dinner at Restaurant,2026-04-30 08:54:15
+63,2026-02-22,expense,Entertainment,198.75,Netflix subscription,2026-04-30 08:54:15
+70,2026-02-08,expense,Other,118.54,Gift for friend,2026-04-30 08:54:15
+69,2026-02-05,expense,Education,137.82,Online course,2026-04-30 08:54:15
+68,2026-02-04,expense,Transport,16.18,Car maintenance,2026-04-30 08:54:15
+74,2026-02-03,expense,Utilities,142.99,Water bill,2026-04-30 08:54:15

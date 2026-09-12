@@ -1,0 +1,194 @@
+Prompt
+
+---
+
+```
+Build a full-stack Budget Tracker with AI Analysis application using Python. Below are the complete requirements.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PROJECT NAME: BudgetIQ — AI Powered Financial Management
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[OVERVIEW]
+A full-stack personal finance management application with:
+- A Python FastAPI backend (REST API)
+- A beautiful, modern HTML/CSS/JS frontend (single-page app)
+- SQLite database for persistent storage
+- AI-powered analysis using NLP and statistical methods
+- Real-time charts and data visualizations
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[BACKEND — Python FastAPI]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Tech stack:
+  - FastAPI + Uvicorn (REST API server)
+  - SQLite via sqlite3 (persistent DB — no ORM needed)
+  - Pandas + NumPy (data analysis)
+  - Matplotlib (chart image generation, saved to /static/charts/)
+  - NLTK with fallback stemmer (NLP category detection)
+  - Pydantic (request/response validation)
+
+Database schema (SQLite):
+  Table: transactions
+    id          INTEGER PRIMARY KEY AUTOINCREMENT
+    amount      REAL NOT NULL
+    category    TEXT NOT NULL
+    description TEXT
+    type        TEXT NOT NULL  -- 'income' or 'expense'
+    date        TEXT NOT NULL  -- ISO format YYYY-MM-DD
+    created_at  TEXT DEFAULT (datetime('now'))
+
+API Endpoints to implement:
+  POST   /api/transactions          — add new transaction
+  GET    /api/transactions          — list all (supports ?type=, ?category= filters)
+  DELETE /api/transactions/{id}     — delete by ID
+  GET    /api/summary               — returns income, expense, balance tuple
+  GET    /api/analysis              — full AI analysis report (JSON)
+  GET    /api/charts/generate       — generate all 4 Matplotlib charts, return file paths
+  GET    /api/categories/detect     — NLP auto-detect category from ?description= param
+  GET    /api/export/csv            — download transactions as CSV
+  GET    /static/charts/{filename}  — serve generated chart images
+
+AI Analysis endpoint (/api/analysis) must return JSON with:
+  - financial_health: string ("Excellent"/"Good"/"Fair"/"Critical")
+  - health_score: int (0–100)
+  - savings_rate: float
+  - income_total, expense_total, balance: float
+  - numpy_stats: { mean, median, std_dev, max, min, count }
+  - category_breakdown: list of { category, total, count, avg, percentage }
+  - monthly_trend: list of { month, income, expense, savings }
+  - top_keywords: list of { word, count }  — from NLTK word frequency
+  - recommendations: list of strings
+  - charts_available: list of chart filenames
+
+NLP Category Detection logic:
+  Use NLTK PorterStemmer + stopword removal to match description words against
+  a keyword map for these categories:
+  Food, Transport, Shopping, Entertainment, Health, Education, Utilities,
+  Salary, Investment, Other
+  Include a built-in fallback stemmer so it works without internet access.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[FRONTEND — HTML/CSS/JS Single Page App]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Deliver a single index.html file served by FastAPI at GET /.
+Design aesthetic: Dark glassmorphism dashboard — deep navy/dark background,
+frosted glass cards, electric accent color (#00d4aa teal-green), clean sans-serif
+typography (use Google Fonts: "DM Sans" for UI, "JetBrains Mono" for numbers).
+
+Layout (single page, scrollable):
+  1. TOP NAV BAR
+     - App name "BudgetIQ" with a small wallet icon (SVG inline)
+     - Live clock showing current date
+     - "Load Sample Data" button
+
+  2. SUMMARY CARDS ROW (4 cards side by side)
+     - Total Income   (green accent)
+     - Total Expense  (red accent)
+     - Net Balance    (teal or red depending on sign)
+     - Savings Rate % (yellow accent)
+     Each card: large number in JetBrains Mono, small label above, subtle trend icon
+
+  3. ADD TRANSACTION PANEL (collapsible card)
+     Form fields:
+       - Type toggle button: [Income] [Expense]
+       - Amount input (numeric, ₹ prefix)
+       - Description input (with live NLP category suggestion below it)
+         — as user types, call GET /api/categories/detect and show detected category
+       - Category dropdown (pre-filled from NLP, editable)
+       - Date picker (default today)
+       - Submit button "Add Transaction"
+
+  4. CHARTS SECTION (2x2 grid of chart images)
+     - Category Pie Chart
+     - Monthly Bar Chart (income vs expense)
+     - Transaction Scatter Plot
+     - Expense Histogram
+     - "Refresh Charts" button that calls /api/charts/generate then reloads images
+     - Show loading spinner while generating
+
+  5. AI ANALYSIS PANEL
+     - "Run AI Analysis" button
+     - Financial health badge (colour-coded: green/yellow/orange/red)
+     - Health score progress bar (0–100)
+     - Savings rate circular gauge (CSS-only)
+     - Recommendations list (each as a styled tip card with icon)
+     - NLP Keywords cloud (word frequency shown as varying font sizes)
+     - NumPy stats grid
+
+  6. TRANSACTIONS TABLE
+     - Columns: #, Date, Type, Category, Description, Amount, Action
+     - Income rows: green left border; Expense rows: red left border
+     - Filter bar: filter by type and category dropdowns
+     - Delete button per row (with confirmation)
+     - Export CSV button
+
+UI/UX requirements:
+  - All API calls use fetch() with async/await — no page reloads
+  - Show toast notifications for success/error after every action
+  - Animate number changes (count-up effect on summary cards)
+  - Responsive: works on mobile (stack columns on small screens)
+  - Dark theme only; use CSS custom properties for all colors
+  - Smooth transitions on all interactive elements (0.2s ease)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[FILE STRUCTURE TO GENERATE]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  budgetiq/
+  ├── main.py            — FastAPI app, all routes, startup
+  ├── database.py        — SQLite connection, schema setup, CRUD functions
+  ├── models.py          — Pydantic request/response models
+  ├── analysis.py        — NumPy/Pandas AI analysis engine
+  ├── nlp.py             — NLP category detector (NLTK + fallback)
+  ├── charts.py          — Matplotlib chart generation (4 chart types)
+  ├── static/
+  │   ├── index.html     — Full frontend SPA (all CSS+JS inline)
+  │   └── charts/        — Auto-created; stores generated PNG files
+  └── requirements.txt   — All Python dependencies
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[REQUIREMENTS.TXT]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+fastapi
+uvicorn[standard]
+numpy
+pandas
+matplotlib
+nltk
+pydantic
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[HOW TO RUN]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  pip install -r requirements.txt
+  python main.py
+  # Open http://localhost:8000 in browser
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[SAMPLE DATA SEEDER]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Include a /api/seed endpoint that inserts 15 realistic sample transactions
+spanning the last 3 months so the charts and analysis have data to show
+immediately. Call this from the "Load Sample Data" button in the frontend.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[COURSE SYLLABUS COVERAGE — must be demonstrated]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Unit I  : File I/O (CSV export), operators, conditionals, loops, string ops
+Unit II : Lists of dicts (transactions), tuples (summary), dicts (NLP map), sets
+Unit III: OOP — Transaction, BudgetTracker, CategoryDetector, BudgetAnalyser classes
+           with encapsulation, methods, and constructor patterns
+Unit IV : NumPy arrays for stats; Pandas DataFrame groupby/filter/merge/transform;
+           Matplotlib — line plot, scatter, histogram, bar plot, pie chart (subplots)
+Unit V  : NLTK tokenization, stemming (PorterStemmer), stopword removal,
+           word frequency visualisation; data mining from transaction descriptions
+
+Every class and function must include a docstring explaining which unit it covers.
+```
